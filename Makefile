@@ -1,5 +1,5 @@
 VOTER_IMG=voter
-TEST_IMG=service-test-suite
+COMMITID := $(shell git rev-parse HEAD)
 ifndef IMAGE_TAG
   IMAGE_TAG=latest
 endif
@@ -28,30 +28,21 @@ dockerise: build-voter
 .PHONY: build-voter
 build-voter:
 ifdef DOCKER_HOST
-	docker -H ${DOCKER_HOST} build -t ${VOTER_IMG}:${IMAGE_TAG} -f voter/Dockerfile voter
+	docker -H ${DOCKER_HOST} build -t ${VOTER_IMG}:${COMMITID} -f voter/Dockerfile voter
+	docker -H ${DOCKER_HOST} tag ${VOTER_IMG}:${COMMITID} ${VOTER_IMG}:latest
 else
-	docker build -t ${VOTER_IMG}:${IMAGE_TAG} -f voter/Dockerfile voter	
-endif
-
-.PHONY: build-test
-build-test:
-ifdef DOCKER_HOST
-	docker -H ${DOCKER_HOST} build -t ${TEST_IMG}:${IMAGE_TAG} -f service-test-suite/Dockerfile service-test-suite
-else
-	docker build -t ${TEST_IMG}:${IMAGE_TAG} -f service-test-suite/Dockerfile service-test-suite
+	docker build -t ${VOTER_IMG}:${IMAGE_TAG} -f voter/Dockerfile voter
+	docker tag ${VOTER_IMG}:${COMMITID} ${VOTER_IMG}:${IMAGE_TAG}
 endif
 
 .PHONY: push
 push:
 	docker tag ${VOTER_IMG}:${IMAGE_TAG} zbio/${VOTER_IMG}:${IMAGE_TAG}
 	docker push zbio/${VOTER_IMG}:${IMAGE_TAG}
-	docker tag ${TEST_IMG}:${IMAGE_TAG} zbio/${TEST_IMG}:${IMAGE_TAG}
-	docker push zbio/${TEST_IMG}:${IMAGE_TAG}
 
 .PHONY: deploy
 deploy:
 	kubectl apply -f voter/voter.yaml
-	kubectl apply -f service-test-suite/test-suite.yaml
 	
 .PHONY: helm-deploy
 helm-deploy: 
