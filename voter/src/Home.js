@@ -18,6 +18,8 @@ const ec_server_endpoint =
   'roost-controlplane:30081';
 // const candidates = ['roost', 'docker', 'minikube', 'kind', 'k3d'];
 
+console.log(process.env);
+console.log(window.env);
 class Home extends Component {
   constructor(props) {
     super(props);
