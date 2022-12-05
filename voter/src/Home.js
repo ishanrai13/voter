@@ -20,6 +20,8 @@ const ec_server_endpoint =
 
 console.log(process.env);
 console.log(window.env);
+console.log(ballot_endpoint);
+console.log(ec_server_endpoint);
 class Home extends Component {
   constructor(props) {
     super(props);
