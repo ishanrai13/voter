@@ -40,7 +40,7 @@ class Home extends Component {
   componentDidMount() {
     let r = Math.random().toString(36).substring(7);
     this.setState({ voter_id: r });
-    fetch(`http://${ec_server_endpoint}`, {
+    fetch(`${ec_server_endpoint}`, {
       method: 'GET',
     })
       .then((response) => response.json())
@@ -66,7 +66,7 @@ class Home extends Component {
       if (ballot_endpoint === '') {
         console.error('ballot endpoint is not set');
       } else {
-        fetch(`http://${ballot_endpoint}`, {
+        fetch(`${ballot_endpoint}`, {
           method: 'POST',
           body: JSON.stringify(data),
         })
